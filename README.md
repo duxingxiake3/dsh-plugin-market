@@ -12,6 +12,13 @@ Open it from either entry:
 Once a plugin is installed, the shipped **Plugins** page owns it — enabling, configuring and
 removing all happen there, and the Market links you straight to it.
 
+![The Market list](dsh-market/screenshots/market-list.png)
+
+<p align="center">
+  <img src="dsh-market/screenshots/market-detail.png" width="49%" alt="A plugin detail page">
+  <img src="dsh-market/screenshots/risk-review.png" width="49%" alt="The pre-install risk review">
+</p>
+
 ## Install
 
 **From DSH itself.** Open **Plugins → Add plugin**, enter the package name, and approve it:
@@ -71,9 +78,62 @@ One folder keeps your repository root clean, and deleting it removes your listin
 in one step. A root-level `dsh-market.json` also still works if you prefer a single file;
 if both exist, `dsh-market/market.json` wins.
 
+### Where each thing goes
+
+Three things describe your plugin, and each is declared in a different place. This table is
+the whole convention; the sections below give the rules for each one.
+
+| What the reader sees | You put it in | Declared by |
+|---|---|---|
+| The long description, developer line, homepage, licence | `dsh-market/market.json` | the `description`, `developer`, `homepage`, `license` fields |
+| The one-line summary under the title | `dsh-market/market.json` | `summary` |
+| Screenshots of your UI | `dsh-market/screenshots/` | the `screenshots[].url` list in `market.json` |
+| Your logo | `dsh-market/logo.svg` | `icon` in `package.json` (optionally `logo` in `market.json`) |
+
+### A worked example: this plugin's own folder
+
+This repository is listed in the Market by the same convention it documents. Its own
+`dsh-market/` folder is the reference — copy its shape:
+
+```text
+dsh-plugin-market/
+├─ package.json                  "icon": "./dsh-market/logo.svg"
+└─ dsh-market/
+   ├─ market.json                displayName, developer, logo, summary, description,
+   │                             screenshots[] with per-language captions, license
+   ├─ logo.svg                   the logo, referenced by package.json `icon`
+   └─ screenshots/
+      ├─ market-list.png
+      ├─ market-detail.png
+      └─ risk-review.png
+```
+
+Nothing outside this folder is needed for the listing, and deleting the folder removes the
+whole thing without touching the plugin.
+
+### Relative paths: two rules, and they differ
+
+This is the one thing that trips people up, so it is worth reading twice. A path in
+`package.json` is resolved as a **file inside your package**; a path in `market.json` is
+resolved as a **file in your repository**. The same logo therefore needs two spellings:
+
+| Field | Resolved as | Write |
+|---|---|---|
+| `package.json` → `icon` | a file on disk, relative to `package.json` | `./dsh-market/logo.svg` |
+| `market.json` → `logo` | a repository path, appended to `raw.githubusercontent.com/<owner>/<repo>/<branch>/` | `dsh-market/logo.svg` |
+| `market.json` → `screenshots[].url` | the same repository path | `dsh-market/screenshots/dashboard.png` |
+
+A descriptor path may also be a full `https://` URL on an allowed host (`raw.githubusercontent.com`,
+`user-images.githubusercontent.com`, `objects.githubusercontent.com`, `avatars.githubusercontent.com`);
+any other host is refused, because rendering it would reveal every reader's IP address to that
+server. Package-relative paths such as `./dsh-market/logo.svg` do **not** work as repository
+paths — the leading `./` is stripped, so the resulting URL 404s and the logo silently falls
+back to the letter tile.
+
 ### 1. The logo
 
-Declare it through the standard manifest field, which the shipped Plugins page reads too:
+The logo is declared through `icon`, the standard manifest field. The shipped Plugins page
+reads it too, so one declaration serves both surfaces:
 
 ```json
 {
@@ -87,6 +147,10 @@ Declare it through the standard manifest field, which the shipped Plugins page r
 | Maximum size | 256 KiB |
 | Location | must resolve inside your package directory |
 | Shape | square, drawn to a 36×36 canvas — it is rendered at 36px inside a 48px tile |
+
+If you would rather keep the manifest untouched, put `"logo": "dsh-market/logo.svg"` in
+`market.json` instead. It overrides `icon` **for the Market only** — the shipped Plugins page
+still reads `icon`, so with that arrangement the two pages can show different logos.
 
 The shipped icons are **solid filled paths with a `userSpaceOnUse` linear gradient**, and the
 glyph fills roughly 50–58% of the canvas. An outline drawing with a thin `stroke` looks
@@ -130,15 +194,24 @@ per-language object (`{"zh": "…", "en": "…"}`). Omitted fields fall back to 
 | `homepage`, `license` | metadata rows on the detail page |
 | `screenshots[].url` | repository-relative path, or an absolute URL on an allowed host |
 | `screenshots[].caption` | the caption under the image and in the full-screen viewer |
-| `logo` | optional; overrides the `package.json` `icon` for the Market only |
+| `logo` | optional; a repository-relative path or allowed URL — overrides the `package.json` `icon` for the Market only |
 
 ### 3. Screenshots
 
-Point `url` at a file in your repository — a path relative to the repository root is easiest:
+Point `url` at a file in your repository. A path relative to the repository root is easiest,
+and note the spelling: no leading `./`, because the path is appended to the repository's raw
+URL rather than resolved against your package:
 
 ```json
-"screenshots": [{ "url": "dsh-market/screenshots/dashboard.png" }]
+"screenshots": [
+  { "url": "dsh-market/screenshots/dashboard.png", "caption": { "zh": "主面板", "en": "Dashboard" } },
+  { "url": "dsh-market/screenshots/settings.png",  "caption": { "zh": "设置页", "en": "Settings" } }
+]
 ```
+
+Listed screenshots win over anything found in your README, and they keep the order you give
+them. A caption is optional but worth adding: it is shown under the image and in the
+full-screen viewer, and it is the only text a reader sees next to the picture.
 
 **If you ship no descriptor at all**, the Market reads the images you already embedded in
 your `README.md`, in markdown or HTML form, and uses those. Keeping the best screenshots

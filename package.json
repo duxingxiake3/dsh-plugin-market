@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Plugin Market for DeepSeek Harness — discover, review and install DSH plugins from the npm registry and GitHub.",
-  "icon": "./icon.svg",
+  "icon": "./dsh-market/logo.svg",
   "license": "MIT",
   "keywords": [
     "dsh-plugin",
@@ -12,14 +12,14 @@
     "plugin-market",
     "plugin-manager"
   ],
-  "author": "TODO: your name or GitHub handle",
+  "author": "duxingxiake3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/dsh-plugin-market.git"
+    "url": "git+https://github.com/duxingxiake3/dsh-plugin-market.git"
   },
-  "homepage": "https://github.com/OWNER/dsh-plugin-market#readme",
+  "homepage": "https://github.com/duxingxiake3/dsh-plugin-market#readme",
   "bugs": {
-    "url": "https://github.com/OWNER/dsh-plugin-market/issues"
+    "url": "https://github.com/duxingxiake3/dsh-plugin-market/issues"
   },
   "exports": {
     ".": "./host.js",
@@ -32,7 +32,6 @@
     "client.js",
     "lib/",
     "cordis.patch.yml",
-    "icon.svg",
     "dsh-market/",
     "locale/*.json",
     "README.md",

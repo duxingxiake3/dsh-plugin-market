@@ -66,7 +66,7 @@ window.__ModuleLoader__.load({
 .${P}btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2))}
 .${P}btn:disabled{opacity:.45;cursor:default}
 .${P}btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
-.${P}btnPrimary{background:var(--dsw-alias-button-primary-fill,var(--dsw-alias-label-primary));border-color:transparent;color:var(--dsw-alias-button-primary-label,var(--dsw-alias-bg-base))}
+.${P}btnPrimary{background:var(--dsw-alias-button-primary-fill,var(--dsw-alias-label-primary));border-color:transparent;color:var(--dsw-alias-label-primary-inverted,var(--dsw-alias-bg-base))}
 .${P}btnPrimary:hover:not(:disabled){background:var(--dsw-alias-button-primary-hover,var(--dsw-alias-label-primary));opacity:.9}
 .${P}btnGhost{border-color:transparent;background:0 0;color:var(--dsw-alias-label-secondary)}
 .${P}btnGhost:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,var(--dsw-alias-bg-layer-2));color:var(--dsw-alias-label-primary)}
@@ -1389,7 +1389,7 @@ window.__ModuleLoader__.load({
 		exports.apply = apply;
 		exports.inject = inject;
 		// Exposed for verification only; the module loader uses `apply` and `inject`.
-		exports.__internals = { MarketBody, MarketDetail, MarketRow, RiskDialog, MarketIcon, ShotLightbox, MarketPage, MarketTab, mergeSources, readLocaleId, zh, en };
+		exports.__internals = { MarketBody, MarketDetail, MarketRow, RiskDialog, MarketIcon, ShotLightbox, MarketPage, MarketTab, Glyph, mergeSources, readLocaleId, zh, en };
 		return module.exports;
 	},
 });

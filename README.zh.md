@@ -10,6 +10,13 @@
 
 插件装上之后由官方 **插件** 页面接管——启用、配置、卸载都在那里，市场只提供一个跳转入口。
 
+![市场列表](dsh-market/screenshots/market-list.png)
+
+<p align="center">
+  <img src="dsh-market/screenshots/market-detail.png" width="49%" alt="插件详情页">
+  <img src="dsh-market/screenshots/risk-review.png" width="49%" alt="安装前的风险审查">
+</p>
+
 ## 安装
 
 **从 DSH 里装。** 打开 **插件 → 添加插件**，填入包名并确认：
@@ -68,9 +75,60 @@ your-plugin/
 如果你更愿意只加一个文件，根目录的 `dsh-market.json` 同样有效；两者同时存在时以
 `dsh-market/market.json` 为准。
 
+### 三样东西分别放哪
+
+市场展示的其实只有三样东西，而它们声明的位置各不相同。下面这张表就是整套约定，
+每一行的规则在后面的小节里展开。
+
+| 读者看到的内容 | 你放在 | 由谁声明 |
+|---|---|---|
+| 详细介绍、开发者、主页、许可证 | `dsh-market/market.json` | `description`、`developer`、`homepage`、`license` |
+| 标题下的一句话简介 | `dsh-market/market.json` | `summary` |
+| 界面截图 | `dsh-market/screenshots/` | `market.json` 里的 `screenshots[].url` 列表 |
+| 你的 logo | `dsh-market/logo.svg` | `package.json` 的 `icon`（也可用 `market.json` 的 `logo`） |
+
+### 一个可照抄的例子：本插件自己的文件夹
+
+本插件在插件市场里的展示，用的就是它自己文档里写的这套约定。它的 `dsh-market/`
+文件夹就是范本，照着它的结构建即可：
+
+```text
+dsh-plugin-market/
+├─ package.json                  "icon": "./dsh-market/logo.svg"
+└─ dsh-market/
+   ├─ market.json                displayName、developer、logo、summary、description、
+   │                             screenshots[]（含中英文图注）、license
+   ├─ logo.svg                   logo 本体，由 package.json 的 `icon` 指向
+   └─ screenshots/
+      ├─ market-list.png
+      ├─ market-detail.png
+      └─ risk-review.png
+```
+
+除这个文件夹之外，展示资料不需要动任何其它文件；删掉它就能整体撤下资料，不影响插件本体。
+
+### 相对路径有两条规则，而且不一样
+
+这是最容易踩的一个坑，值得读两遍：`package.json` 里的路径是按**包内文件**解析的，
+`market.json` 里的路径是按**仓库文件**解析的。所以同一个 logo 需要两种写法：
+
+| 字段 | 按什么解析 | 该怎么写 |
+|---|---|---|
+| `package.json` → `icon` | 磁盘上的文件，相对 `package.json` | `./dsh-market/logo.svg` |
+| `market.json` → `logo` | 仓库路径，拼在 `raw.githubusercontent.com/<owner>/<repo>/<branch>/` 之后 | `dsh-market/logo.svg` |
+| `market.json` → `screenshots[].url` | 同上，仓库路径 | `dsh-market/screenshots/dashboard.png` |
+
+描述器里的路径也可以直接写完整 `https://` 地址，但域名必须在白名单内
+（`raw.githubusercontent.com`、`user-images.githubusercontent.com`、
+`objects.githubusercontent.com`、`avatars.githubusercontent.com`）；其它域名一律拒绝，
+因为渲染它会把你每个读者的 IP 地址暴露给那台服务器。
+
+反过来，像 `./dsh-market/logo.svg` 这种**包内写法不能**用在 `market.json` 里：开头的
+`./` 会被去掉再拼接，得到的 URL 是 404，logo 会静默退化成首字母方块，不报错。
+
 ### 一、logo
 
-用标准清单字段声明，官方「插件」页读的也是这个字段：
+用标准清单字段 `icon` 声明。官方「插件」页读的也是这个字段，所以一次声明两处都生效：
 
 ```json
 {
@@ -84,6 +142,10 @@ your-plugin/
 | 大小上限 | 256 KiB |
 | 位置 | 解析后必须仍在你的包目录内 |
 | 形状 | 正方形，按 36×36 画布绘制 |
+
+如果你不想动 package.json，也可以在 `market.json` 里写
+`"logo": "dsh-market/logo.svg"`。它**只对插件市场**覆盖 `icon`——官方「插件」页读的仍是
+`icon`，所以这样安排时两个页面可以显示不同的 logo。
 
 官方图标看起来是**实心填充路径 + `userSpaceOnUse` 线性渐变**，图形占画布约 50–58%。
 对比之下，用细 `stroke` 画的线框会明显偏轻、跟周围不是一套。想让自己的图标自然融进去，
@@ -125,15 +187,22 @@ your-plugin/
 | `homepage`、`license` | 详情页的信息行 |
 | `screenshots[].url` | 仓库内相对路径，或受支持域名上的绝对地址 |
 | `screenshots[].caption` | 图片下方的图注，全屏查看时也显示 |
-| `logo` | 可选；只覆盖市场里显示的 logo，不影响 `package.json` 的 `icon` |
+| `logo` | 可选；写仓库内相对路径或受支持域名上的地址，只覆盖市场里显示的 logo |
 
 ### 三、截图
 
-`url` 指向你自己仓库里的文件即可，写相对于仓库根目录的路径最省事：
+`url` 指向你自己仓库里的文件即可，写相对于仓库根目录的路径最省事。注意写法上**不要**
+加开头的 `./`：这个路径是拼在仓库 raw 地址后面的，不是相对你的包解析的。
 
 ```json
-"screenshots": [{ "url": "dsh-market/screenshots/dashboard.png" }]
+"screenshots": [
+  { "url": "dsh-market/screenshots/dashboard.png", "caption": { "zh": "主面板", "en": "Dashboard" } },
+  { "url": "dsh-market/screenshots/settings.png",  "caption": { "zh": "设置页", "en": "Settings" } }
+]
 ```
+
+描述器里列出的截图优先于从 README 里找到的图，并且按你给的顺序展示。图注可以不写，但
+建议写：它会显示在图片下方和全屏查看时，是读者在图片旁边唯一能看到的说明文字。
 
 **完全没有描述文件也没关系**：市场会去读你已经嵌在 `README.md` 里的图（markdown 与
 HTML 两种写法都认）。把最好的截图放在 README 靠前的位置效果更好，因为靠前的图排序更优先。

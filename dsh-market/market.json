@@ -5,9 +5,10 @@
     "en": "Plugin Market"
   },
   "developer": {
-    "name": "TODO: your name or GitHub handle",
-    "url": "https://github.com/OWNER"
+    "name": "duxingxiake3",
+    "url": "https://github.com/duxingxiake3"
   },
+  "logo": "dsh-market/logo.svg",
   "summary": {
     "zh": "在 DSH 里检索、评估、安装插件：绿色标官方、橙色标三方，装前先用模型做一遍权限与风险审查。",
     "en": "Discover, vet and install DSH plugins from inside DSH: official and third-party are tagged apart, and nothing installs before a model-backed risk review."
@@ -16,5 +17,28 @@
     "zh": "插件市场把「找一个插件」和「装一个插件」接成一条路。\n\n从 npm 注册表和 GitHub 检索插件，官方内置插件直接读取当前安装的清单，所以绿色标签不会漏也不会错。每条结果都能展开成详情页：开发者、适配性、插件实际做什么、以及作者提供的界面截图。介绍文字如果是外文，会调用一次模型翻译并缓存，改动描述才会重新翻译，译文一律标注「机翻」且原文随时可查。\n\n安装前会先跑一遍确定性规则扫描，再用模型审查插件的清单与入口代码，把结论摆给你看，由你确认。安装本身走 DSH 官方的插件管理服务，不自己实现一套；装完之后启用、配置、卸载都交给官方插件页。\n\n图片只从代码托管域名加载，不会把你的访问暴露给第三方。",
     "en": "Plugin Market joins \"find a plugin\" to \"install a plugin\".\n\nIt searches the npm registry and GitHub, and reads the official plugins straight from the running installation, so the official tag is never a guess. Every result opens into a detail page: developer, compatibility, what the plugin actually does, and the interface screenshots its author provided. Foreign-language copy is translated once with a model and cached — editing the description is what triggers a new translation — always labelled as machine-translated with the original one hover away.\n\nInstalling runs a deterministic rule scan and then a model review over the plugin's manifest and entry code, shows you the findings, and waits for your confirmation. The installation itself goes through DSH's own plugin-manager service rather than a private copy, and once a plugin is installed its lifecycle belongs to the shipped Plugins page.\n\nImages are loaded only from the code host, so browsing never announces you to a third party."
   },
+  "screenshots": [
+    {
+      "url": "dsh-market/screenshots/market-list.png",
+      "caption": {
+        "zh": "市场首页：官方插件标绿、三方插件标橙，每条都能展开成详情页。",
+        "en": "The Market page: official plugins tagged green, third-party ones orange, and every row opens into a detail page."
+      }
+    },
+    {
+      "url": "dsh-market/screenshots/market-detail.png",
+      "caption": {
+        "zh": "详情页：开发者、适配性、功能简介与作者提供的界面截图集中在一页。",
+        "en": "The detail page: developer, compatibility, what the plugin does, and the screenshots its author provided."
+      }
+    },
+    {
+      "url": "dsh-market/screenshots/risk-review.png",
+      "caption": {
+        "zh": "安装前的风险审查：确定性规则扫描加一遍模型复核，结论摆给你确认后才装。",
+        "en": "The pre-install risk review: a deterministic rule scan plus a model pass, shown for confirmation before anything installs."
+      }
+    }
+  ],
   "license": "MIT"
 }
