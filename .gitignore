@@ -9,6 +9,19 @@ node_modules/
 .dsh-market-cache/
 translations.json
 
+# Install lockfiles.
+# Installing this package by path or link can leave one of these here, and a lockfile
+# records the local directory it resolved against — a machine path that must not be
+# published. The package ships no lockfile, so nothing is lost by ignoring them.
+package-lock.json
+npm-shrinkwrap.json
+pnpm-lock.yaml
+yarn.lock
+
+# Tool caches
+.eslintcache
+*.tsbuildinfo
+
 # Editor and OS noise
 .DS_Store
 Thumbs.db
