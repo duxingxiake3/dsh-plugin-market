@@ -1,0 +1,20 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plugin Market">
+  <!--
+    Drawn to the shipped icon specification: a 36x36 canvas rendered at its intrinsic
+    size inside the 48px tile, solid filled paths only (no strokes), and a
+    userSpaceOnUse linear gradient. The glyph spans 19.2 x 18.2 units (about 53% of the
+    canvas), matching the 50-58% the shipped icons use.
+
+    The silhouette is the classic shopfront: an awning flaring outward with a scalloped
+    hem, over a body carrying a door notch. Both are single filled contours, so the
+    shape stays legible at 18px where a stroked version turned to wireframe.
+  -->
+  <path d="M11.4 9.2h13.2l3 4.8a3.6 3.6 0 0 1-6.4 0 3.6 3.6 0 0 1-6.4 0 3.6 3.6 0 0 1-6.4 0Z" fill="url(#market-a)" />
+  <path d="M10.8 17h14.4v8.2a2.2 2.2 0 0 1-2.2 2.2h-2.6v-5.8a1.2 1.2 0 0 0-1.2-1.2h-2.4a1.2 1.2 0 0 0-1.2 1.2v5.8h-2.6a2.2 2.2 0 0 1-2.2-2.2Z" fill="url(#market-a)" />
+  <defs>
+    <linearGradient id="market-a" x1="13" y1="9.3" x2="25" y2="27" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CB7FF" />
+      <stop offset="1" stop-color="#145AF3" />
+    </linearGradient>
+  </defs>
+</svg>

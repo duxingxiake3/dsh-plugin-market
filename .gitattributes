@@ -1,0 +1,17 @@
+# Normalise line endings in the repository.
+#
+# Git is told to store LF for every text file and to check LF out on every platform,
+# so a Windows machine with `core.autocrlf=true` and a Linux contributor produce the
+# same bytes. Without this, the checkout rewrite turns every file into a whole-file
+# diff on the next `git status`, and a CRLF file can slip into a release.
+* text=auto eol=lf
+
+# Binary assets: never normalise, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.tgz binary
+*.zip binary

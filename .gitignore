@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Packed artefacts
+*.tgz
+
+# Local caches and logs
+*.log
+.dsh-market-cache/
+translations.json
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

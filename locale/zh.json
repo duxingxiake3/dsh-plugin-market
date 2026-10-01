@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "插件市场",
+    "description": "从 npm 与 GitHub 检索 DSH 插件，安装前先做模型风险检查。"
+  }
+}

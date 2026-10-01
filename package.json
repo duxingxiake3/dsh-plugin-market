@@ -1,0 +1,53 @@
+{
+  "name": "dsh-plugin-market",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Plugin Market for DeepSeek Harness — discover, review and install DSH plugins from the npm registry and GitHub.",
+  "icon": "./icon.svg",
+  "license": "MIT",
+  "keywords": [
+    "dsh-plugin",
+    "dsh",
+    "deepseek-harness",
+    "plugin-market",
+    "plugin-manager"
+  ],
+  "author": "TODO: your name or GitHub handle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/dsh-plugin-market.git"
+  },
+  "homepage": "https://github.com/OWNER/dsh-plugin-market#readme",
+  "bugs": {
+    "url": "https://github.com/OWNER/dsh-plugin-market/issues"
+  },
+  "exports": {
+    ".": "./host.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "host.js",
+    "client.js",
+    "lib/",
+    "cordis.patch.yml",
+    "icon.svg",
+    "dsh-market/",
+    "locale/*.json",
+    "README.md",
+    "README.zh.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings-plugins"
+      ]
+    }
+  }
+}
