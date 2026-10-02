@@ -1054,7 +1054,10 @@ window.__ModuleLoader__.load({
 				loadPage(source, applied, page)
 					.then((value) => {
 						if (cancelled) return;
-						setState({ status: 'ready', items: value.items ?? [], total: value.total ?? 0, warnings: value.warnings ?? [] });
+						// `total` is preserved as `null`, not coerced to 0: null means "no honest
+						// count is available", and turning it into 0 would make the footer claim
+						// zero results above a full list.
+						setState({ status: 'ready', items: value.items ?? [], total: value.total ?? null, warnings: value.warnings ?? [] });
 					})
 					.catch((error) => {
 						if (cancelled) return;
