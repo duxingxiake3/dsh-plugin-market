@@ -188,6 +188,8 @@ window.__ModuleLoader__.load({
 			prev: '上一页',
 			next: '下一页',
 			pageInfo: '第 {page} 页 · 共约 {total} 个结果',
+			pageInfoOpen: '第 {page} 页 · 还有更多结果',
+			pageInfoFiltered: '第 {page} 页 · 匹配「{query}」的结果',
 			developer: '开发者',
 			version: '版本',
 			license: '许可',
@@ -284,6 +286,8 @@ window.__ModuleLoader__.load({
 			prev: 'Previous',
 			next: 'Next',
 			pageInfo: 'Page {page} · about {total} results',
+			pageInfoOpen: 'Page {page} · more results available',
+			pageInfoFiltered: 'Page {page} · results matching “{query}”',
 			developer: 'Developer',
 			version: 'Version',
 			license: 'License',
@@ -374,7 +378,10 @@ window.__ModuleLoader__.load({
 			const seen = new Set(officialItems.map((item) => item.name));
 			return {
 				items: officialItems.concat(thirdItems.filter((item) => !seen.has(item.name))),
-				total: (official?.total ?? 0) + (third?.total ?? 0),
+				// `null` from either source means "no honest count available", and it must not
+				// collapse to 0 — a footer reading "0 results" under a full list is worse than
+				// saying nothing. Official carries a real count; the registry does not.
+				total: (official?.total ?? 0) + (third?.total ?? 0) || null,
 				warnings: third?.warnings ?? [],
 			};
 		}
@@ -1248,7 +1255,15 @@ window.__ModuleLoader__.load({
 						}),
 						jsx('span', {
 							className: `${P}notice`,
-							children: fmt(t('pageInfo'), { page: page + 1, total: state.total }),
+							// A count is shown only when a source actually reported one. The registry
+							// returns the size of the whole keyword set rather than a match count, so
+							// with a query typed there is no honest figure — and claiming "about 6572
+							// results" for a query that matched a handful was the bug being fixed here.
+							children: applied
+								? fmt(t('pageInfoFiltered'), { page: page + 1, query: applied })
+								: (typeof state.total === 'number'
+									? fmt(t('pageInfo'), { page: page + 1, total: state.total })
+									: fmt(t('pageInfoOpen'), { page: page + 1 })),
 						}),
 						jsx('button', {
 							type: 'button', className: `${P}btn`,
