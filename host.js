@@ -35,6 +35,22 @@ const TICKET_TTL_MS = 30 * 60_000;
 /** @type {Map<string, { id: string, risk: string, at: number }>} */
 const tickets = new Map();
 
+/**
+ * Why the last model reviews failed, kept for diagnosis. Nothing here is rendered: the page
+ * shows one actionable line, and the raw model answer — which is not a message for a reader —
+ * stays in this bounded buffer.
+ *
+ * @type {Array<{ at: string, id: string, model: string | null, error: string, raw: string }>}
+ */
+const diagnostics = [];
+const DIAGNOSTICS_MAX = 20;
+
+/** Record one failed review, oldest first, bounded so a long-lived process cannot grow. */
+function recordDiagnostic(entry) {
+  diagnostics.push(entry);
+  while (diagnostics.length > DIAGNOSTICS_MAX) diagnostics.shift();
+}
+
 /** Optional GitHub token, which lifts the unauthenticated 10 searches/minute limit. */
 function githubToken() {
   const value = process.env.DSH_MARKET_GITHUB_TOKEN ?? process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
@@ -340,6 +356,20 @@ async function dispatch(ctx, endpoint, payload, signal, translations) {
           });
           const risk = combineRisk(deterministic.ceiling, reviewed.verdict);
           const reportId = issueTicket(input.id, risk);
+          // The reason a model review failed is diagnosis, not a message for the reader. The
+          // UI shows one actionable line ("retry, or use another model"); the detail stays in
+          // the report for whoever debugs it, so nothing is lost and nothing is shown that a
+          // reader cannot act on.
+          if (reviewed.error) {
+            recordDiagnostic({
+              at: new Date().toISOString(),
+              id: input.id,
+              model: selection.model || null,
+              error: reviewed.error,
+              raw: typeof reviewed.raw === 'string' ? reviewed.raw.slice(0, 2000) : '',
+            });
+            console.error(`[dsh-plugin-market] 风险审查模型调用失败 id=${input.id} model=${selection.model || '?'}: ${reviewed.error}`);
+          }
           return {
             ok: true,
             value: {
@@ -348,7 +378,9 @@ async function dispatch(ctx, endpoint, payload, signal, translations) {
               risk,
               deterministic,
               model: reviewed.verdict,
-              modelError: reviewed.error,
+              // Deliberately not `reviewed.error`: the reader gets a fixed, actionable line and
+              // the raw model text never reaches the page.
+              modelError: reviewed.error ? '模型未返回可解析的结论，请重试或换个模型' : null,
               modelUsed: selection.model || null,
               evidence: {
                 bytes: gathered.evidence.length,
